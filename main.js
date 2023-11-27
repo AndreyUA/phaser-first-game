@@ -8,7 +8,7 @@ import bomb from "/assets/bomb.png";
 import platform from "/assets/platform.png";
 import dude from "/assets/dude.png";
 
-let player, platforms, cursors, stars;
+let player, platforms, cursors, stars, score, scoreText;
 
 const config = {
   type: Phaser.AUTO,
@@ -43,6 +43,11 @@ function preload() {
 
 function create() {
   this.add.image(400, 300, "sky");
+  score = 0;
+  scoreText = this.add.text(16, 16, "Score: 0", {
+    fontSize: "32px",
+    fill: "#000",
+  });
 
   platforms = this.physics.add.staticGroup();
 
@@ -118,4 +123,7 @@ function update() {
 
 function collectStar(player, star) {
   star.disableBody(true, true);
+
+  score++;
+  scoreText.setText("Score: " + score);
 }
