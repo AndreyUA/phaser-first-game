@@ -8,7 +8,7 @@ import bomb from "/assets/bomb.png";
 import platform from "/assets/platform.png";
 import dude from "/assets/dude.png";
 
-let player, platforms;
+let player, platforms, cursors;
 
 const config = {
   type: Phaser.AUTO,
@@ -73,6 +73,34 @@ function create() {
   });
 
   this.physics.add.collider(player, platforms);
+
+  cursors = this.input.keyboard.createCursorKeys();
 }
 
-function update() {}
+function update() {
+  // ! Move left
+  if (cursors.left.isDown) {
+    player.setVelocityX(-160);
+
+    player.anims.play("left", true);
+  }
+
+  // ! Move right
+  if (cursors.right.isDown) {
+    player.setVelocityX(160);
+
+    player.anims.play("right", true);
+  }
+
+  // ! Stop
+  if (cursors.left.isUp && cursors.right.isUp) {
+    player.setVelocityX(0);
+
+    player.anims.play("turn");
+  }
+
+  // ! Jump
+  if (cursors.up.isDown && player.body.touching.down) {
+    player.setVelocityY(-330);
+  }
+}
