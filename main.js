@@ -7,8 +7,21 @@ import star from "/assets/star.png";
 import bomb from "/assets/bomb.png";
 import platform from "/assets/platform.png";
 import dude from "/assets/dude.png";
+import jump from "/assets/jump.mp3";
+import explosion from "/assets/explosion.mp3";
+import eat from "/assets/eat.mp3";
 
-let player, platforms, cursors, stars, score, scoreText, bombs, gameOver;
+let player,
+  platforms,
+  cursors,
+  stars,
+  score,
+  scoreText,
+  bombs,
+  gameOver,
+  jumpSound,
+  explosionSound,
+  eatSound;
 
 const config = {
   type: Phaser.AUTO,
@@ -39,10 +52,19 @@ function preload() {
     frameWidth: 32,
     frameHeight: 48,
   });
+
+  this.load.audio("jump", jump);
+  this.load.audio("explosion", explosion);
+  this.load.audio("eat", eat);
 }
 
 function create() {
   gameOver = false;
+
+  jumpSound = this.sound.add("jump");
+  explosionSound = this.sound.add("explosion");
+  eatSound = this.sound.add("eat");
+
   this.add.image(400, 300, "sky");
   score = 0;
   scoreText = this.add.text(16, 16, "Score: 0", {
@@ -127,11 +149,13 @@ function update() {
 
   // ! Jump
   if (cursors.up.isDown && player.body.touching.down) {
+    jumpSound.play();
     player.setVelocityY(-330);
   }
 }
 
 function collectStar(player, star) {
+  eatSound.play();
   star.disableBody(true, true);
 
   score++;
@@ -155,6 +179,7 @@ function collectStar(player, star) {
 }
 
 function hitBomb(player, bomb) {
+  explosionSound.play();
   this.physics.pause();
   player.setTint(0xff0000);
   player.anims.play("turn");
