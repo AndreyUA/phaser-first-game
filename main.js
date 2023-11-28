@@ -7,9 +7,9 @@ import star from "/assets/star.png";
 import bomb from "/assets/bomb.png";
 import platform from "/assets/platform.png";
 import dude from "/assets/dude.png";
-import jump from "/assets/jump.mp3";
-import explosion from "/assets/explosion.mp3";
-import eat from "/assets/eat.mp3";
+import jump from "/audio/jump.mp3";
+import explosion from "/audio/explosion.mp3";
+import eat from "/audio/eat.mp3";
 
 let player,
   platforms,
