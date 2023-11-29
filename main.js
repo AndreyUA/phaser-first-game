@@ -7,6 +7,7 @@ import star from "/assets/star.png";
 import bomb from "/assets/bomb.png";
 import platform from "/assets/platform.png";
 import dude from "/assets/dude.png";
+import health from "/assets/health.png";
 import jump from "/audio/jump.mp3";
 import explosion from "/audio/explosion.mp3";
 import eat from "/audio/eat.mp3";
@@ -21,7 +22,8 @@ let player,
   gameOver,
   jumpSound,
   explosionSound,
-  eatSound;
+  eatSound,
+  healthPoints;
 
 const config = {
   type: Phaser.AUTO,
@@ -48,6 +50,7 @@ function preload() {
   this.load.image("star", star);
   this.load.image("bomb", bomb);
   this.load.image("platform", platform);
+  this.load.image("health", health);
   this.load.spritesheet("dude", dude, {
     frameWidth: 32,
     frameHeight: 48,
@@ -118,6 +121,12 @@ function create() {
   bombs = this.physics.add.group();
   this.physics.add.collider(player, bombs, hitBomb, null, this);
   this.physics.add.collider(platforms, bombs);
+
+  healthPoints = this.physics.add.staticGroup({
+    key: "health",
+    repeat: 2,
+    setXY: { x: 730, y: 30, stepX: 24 },
+  });
 }
 
 function update() {
@@ -180,8 +189,21 @@ function collectStar(player, star) {
 
 function hitBomb(player, bomb) {
   explosionSound.play();
-  this.physics.pause();
-  player.setTint(0xff0000);
-  player.anims.play("turn");
-  gameOver = true;
+  bomb.disableBody(true, true);
+
+  if (healthPoints.countActive(true) > 0) {
+    healthPoints.children.entries[0].destroy();
+  }
+
+  if (healthPoints.countActive(true) === 0) {
+    this.physics.pause();
+    player.setTint(0xff0000);
+    player.anims.play("turn");
+    gameOver = true;
+
+    this.add.text(230, 300, "Game over", {
+      fontSize: "64px",
+      fill: "#ff0000",
+    });
+  }
 }
